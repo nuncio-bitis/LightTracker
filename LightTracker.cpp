@@ -77,6 +77,8 @@ static const int cMaxV    = (cMid + 100);  // bottom-most position
                                            // Broken servo, it also shouldn't need to go lower than this anyway.
 static const int cParkPos = cMid;  // Park position = middle for both servos.
 
+static const int cMinStepSize = 5;
+
 static const int cStepDelay = 50; // ms
 
 static void initServos(void)
@@ -216,14 +218,14 @@ static void ComputeDirectionalValues(void)
 static int ComputeAzimuthStep(void)
 {
     // Position increases from left to right
-    int az = (int)((right - left) / 2.0 + 0.5);
+    int az = (int)((right - left) + 0.5);
     return az;
 }
 
 static int ComputeElevationStep(void)
 {
     // Position increases from top to bottom
-    int el = (int)((bottom - top) / 2.0 + 0.5);
+    int el = (int)((bottom - top) + 0.5);
     return el;
 }
 
@@ -273,12 +275,12 @@ int main(int argc, char *argv[])
         int elStep = ComputeElevationStep();
         DPRINTF("Step: [%d, %d]\n", azStep, elStep);
 
-        if (abs(azStep) > 5)
+        if (abs(azStep) > cMinStepSize)
         {
             hPos += azStep;
             changed = true;
         }
-        if (abs(elStep) > 5)
+        if (abs(elStep) > cMinStepSize)
         {
             vPos += elStep;
             changed = true;
